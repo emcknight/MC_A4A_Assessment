@@ -14,6 +14,7 @@ class ServiceScheduler:
         self.customersServed = 0
         self.VIPCustomersServed = 0
         self.openTime = runTime
+        self.VIPCounter = 0
         self.openStore()
         
     # The store is run by calling this method
@@ -24,7 +25,7 @@ class ServiceScheduler:
         while self.openTime > 0:
             # If its time for the customer to come in, new customer added and random next customer time is set
             if self.openTime % custTime == 0:
-                self.newCustomer()
+                self.checkIn()
                 custTime = random.randrange(1, 5, 1)
             self.getNextCustomer()
             self.progressWorkers()
@@ -33,13 +34,12 @@ class ServiceScheduler:
         return
 
     # New customer function
-    def newCustomer(self):
-        VIP = self.ticketId % 3 != 0 # Every 3rd customer is a non-VIP
-        cust = Customer(VIP, self.ticketId)
+    def checkIn(self):
+        cust = Customer(self.ticketId)
         self.ticketId += 1 # Increment ticket ID for next customer
 
         # Print out the name of the customer in line
-        if VIP:
+        if cust.isVIP:
             self.VIPQueue.append(cust)
             print("VIP Customer", cust.name, "is now in line.")
         else:
@@ -54,22 +54,46 @@ class ServiceScheduler:
         if [i[0] for i in self.workers].count(True) == self.numWorkers:
             print("No workers available...")
             return
-        # Otherwise, find the first available worker and assign them the next customer prioritizing VIP over Regular.
+        # Otherwise, find the first available worker and assign them the next customer prioritizing VIP over Regular 2:1.
         else:
+            # Check each worker for availability
             for i in range(self.numWorkers):
-                cust = None
+                # If the worker is available...
                 if self.workers[i][0] == 0:
-                    try:
-                        cust = self.VIPQueue.pop(0)
-                        print("Employee",i+1,"will now serve ticket number:",cust.ticketId)
-                    except:
-                        try:
-                            cust = self.customerQueue.pop(0)
-                            print("Employee",i+1,"will now serve ticket number:",cust.ticketId)
-                        except:
-                            # If no customers are waiting, end the loop
-                            print("No customers waiting...")
-                            break
+                    cust = None
+                    # VIPCounter keeps track of how many VIPs have come in sequentially.
+                    # If the VIPCounter is less than 2, either none or one VIP customer has come through last
+                    if self.VIPCounter < 2:
+                            # Try to serve the next VIP customer and increase the VIP Counter by 1
+                            try:
+                                cust = self.VIPQueue.pop(0)
+                                self.VIPCounter += 1
+                                print("Employee",i+1,"will now serve ticket number:",cust.ticketId)
+                            except:
+                                # If no VIP customers are waiting, check the regular customer queue
+                                try:
+                                    cust = self.customerQueue.pop(0)
+                                    self.VIPCounter = 0 # Reset VIP counter to 0 to prioritize VIPs next
+                                    print("Employee",i+1,"will now serve ticket number:",cust.ticketId)
+                                except:
+                                    # If no customers are waiting, end the loop
+                                    print("No customers waiting...")
+                                    break
+                    # Else do the opposite of the above and prioritize the regular customer queue.
+                    else:
+                            try:
+                                cust = self.customerQueue.pop(0)
+                                self.VIPCounter = 0
+                                print("Employee",i+1,"will now serve ticket number:",cust.ticketId)
+                            except:
+                                try:
+                                    cust = self.VIPQueue.pop(0)
+                                    self.VIPCounter += 1
+                                    print("Employee",i+1,"will now serve ticket number:",cust.ticketId)
+                                except:
+                                    # If no customers are waiting, end the loop
+                                    print("No customers waiting...")
+                                    break
                     self.workers[i] = (True, 0, cust) # Worker assigned a customer and set to active
         return 
     
