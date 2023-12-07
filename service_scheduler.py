@@ -2,6 +2,16 @@ import random
 import time
 from customer import Customer
 
+'''
+Mailchimp Backend Service Scheduler Assignment - ServiceScheduler Class
+---------------------------------------------------------------
+This is the prescribed Service Scheduler class used to operate the store and handle new customers. Functions are listed below:
+openStore() - Starts the Service Scheduler
+checkIn() - Adds the next customer to the queue
+getNextCustomer() - Processes the next waiting customer while prioritizing VIP customers 2:1
+progressWorkers() - Incrementer function used to add time to the workers current service
+'''
+
 ## Service Scheduler Class ##
 class ServiceScheduler:
     def __init__(self, workers, runTime):
