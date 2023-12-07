@@ -1,4 +1,4 @@
-from .service_scheduler import ServiceScheduler
+from service_scheduler import ServiceScheduler
 
 '''
 Mailchimp Backend Service Scheduler Assignment
@@ -14,7 +14,8 @@ Assumptions made are as follows:
 if __name__ == "__main__":
      print("Welcome to the scheduler!")
      workers = int(input("How many employees are working today?: "))
-     scheduler = ServiceScheduler(workers)
+     runTime = int(input("How many seconds will the store operate today?: "))
+     scheduler = ServiceScheduler(workers, runTime)
      print("The day is done!")
      print(scheduler)
      
