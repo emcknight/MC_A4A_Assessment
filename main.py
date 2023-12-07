@@ -15,7 +15,8 @@ if __name__ == "__main__":
      print("Welcome to the scheduler!")
      workers = int(input("How many employees are working today?: "))
      runTime = int(input("How many seconds will the store operate today?: "))
+     print("\n")
      scheduler = ServiceScheduler(workers, runTime)
-     print("The day is done!")
+     print("\nDing Ding Ding! Closing Time!")
      print(scheduler)
      

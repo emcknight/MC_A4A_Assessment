@@ -106,7 +106,7 @@ class ServiceScheduler:
                     self.VIPCustomersServed += 1
                 else:
                     self.customersServed += 1
-        stillInLine = len(self.customerQueue)+len(self.VIPQueue)
+        stillInLine = len(self.customerQueue) + len(self.VIPQueue)
 
         return f'{self.VIPCustomersServed} VIP customer(s) were served and {self.customersServed} regular customer(s) were served.\n{numOTWorkers} worker(s) had to work a total of {overTime} seconds overtime to finish the day.\n{stillInLine} customer(s) were still in line when the day was finished.'
         
