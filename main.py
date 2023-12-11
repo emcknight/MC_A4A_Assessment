@@ -13,7 +13,7 @@ Assumptions made are as follows:
 '''
 
 if __name__ == "__main__":
-     print("Welcome to the scheduler!")
+     print("Welcome to the Service Scheduler!")
      workers = int(input("How many employees are working today?: "))
      runTime = int(input("How many seconds will the store operate today?: "))
      scheduler = ServiceScheduler(workers, runTime)
